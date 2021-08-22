@@ -1,0 +1,15 @@
+.eye1{
+    position:absolute;
+    margin-top: -6.5%;
+    right: 16%;
+}
+.eye2{
+    position:absolute;
+    margin-top: -6.5%;
+
+    right: 16%;
+}
+i:hover {
+    color: #c0c0c0;
+    cursor: pointer;
+  }

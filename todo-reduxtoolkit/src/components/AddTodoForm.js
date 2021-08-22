@@ -15,7 +15,7 @@ const AddTodoForm = () => {
 				}))
 		}
 		else{
-			alert('not text')
+			alert('! No message')
 		}
 		
 			
