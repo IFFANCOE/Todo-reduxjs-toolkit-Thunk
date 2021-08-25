@@ -20,11 +20,11 @@ const App = () => {
 			</Router>
 			
 			
-{/* 
-			<h1>My Todo List</h1>
+
+			{/* <h1>My Todo List</h1>
 			<AddTodoForm />
 			<TodoList />
-			<TotalCompleteItems /> */}
+			<TotalCompleteItems />  */}
 		</div>
 	);
 };

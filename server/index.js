@@ -25,6 +25,7 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(cors());
 app.use('/users',userRoute)
 
+
 //PORT
 const port = process.env.PORT || 4000;
 const server = app.listen(port, ()=>{
@@ -39,6 +40,6 @@ app.use((req,res ,next)=>{
 app.use(function(err,req,res,next){
     console.error(err.message);
     if(!err.statusCode) err.statusCode = 500;
-    res.staus(err.statusCode).send(err.message)
+    res.status(err.statusCode).send(err.message)
 })
 

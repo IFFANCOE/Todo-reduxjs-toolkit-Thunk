@@ -1,23 +1,77 @@
 let mongoose = require('mongoose'),
     express = require('express'),
-    router = express.Router();
+    router = express.Router(),
+    hash = require('object-hash');
+
+const jwt = require('jsonwebtoken')
+// const jwt_decode = require('jwt-decode');
+// const decoded = jwt_decode(token);
 
 //! User modle
 let userSchema = require('../models/User')
 
+//Fomat of token
+// Authorization: Bearer <access_token>
+//verify token
+const verifyToken = (req, res, next) => {
+    //Get auth header value
+    const bearerHeader = req.headers['authorization']
+    console.log(bearerHeader);
+    // Check if bearer is undefined
+    if (typeof bearerHeader !== 'undefined') {
+        // split at the space
+        const bearer = bearerHeader.split(' ');
+        // Get token from array 
+        const bearerToken = bearer[1];
+        // Set the token 
+        req.token = bearerToken
+        console.log(req.token,"555");
+        // Next niddleware
+        next();
+    } else {
+        // Forbidden
+        res.sendStatus(403);
+    }
+}
+
 //-Create User in database
-router.route('/create-user').post((req, res, next) => {
-    userSchema.create(req.body, (error, data) => {
+router.route('/register').post((req, res, next) => {
+
+ const jwtSign  = jwt.sign(req.body, 'secretkey')
+
+    console.log(jwtSign);
+    let passwordHash = hash([req.body.password])
+    const bodyReq = {
+        name: req.body.name,
+        email: req.body.email,
+        password: passwordHash,
+        confirm_password: passwordHash,
+        token:jwtSign
+    }
+    userSchema.create(bodyReq, (error, data) => {
         if (error) {
             return next(error)
         }
-        else {
+        else
             console.log(data);
-            res.json(data)
-        }
+        res.json(data)
     })
 })
 
+//login 
+router.route('/login').post(verifyToken,(req, res) => {
+    jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if (err) {
+            res.sendStatus(403);
+        } else {
+            res.json({
+                meg: 'Login success...',
+                authData
+            })
+        }
+    })
+
+})
 //* Read Users (show all users)
 router.route('/').get((req, res) => {
     userSchema.find((error, data) => {
@@ -70,4 +124,7 @@ router.route('delete-user/:id').delete((req, res, next) => {
         }
     })
 })
+
+
+
 module.exports = router

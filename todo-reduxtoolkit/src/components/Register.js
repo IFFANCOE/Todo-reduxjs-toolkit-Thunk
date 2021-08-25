@@ -17,9 +17,9 @@ const Register = () => {
     const [passwordError, setPasswordError] = useState("")
     const [c_password, setC_Password] = useState("")
     const [c_passwordError, setC_PasswordError] = useState("")
-
     const [passwordShown, setPasswordShown] = useState(false);
     const [c_passwordShown, setC_PasswordShown] = useState(false);
+
     const validateEmail = (e) => {
         //Email
         const inputEmail = e.target.value
@@ -43,7 +43,7 @@ const Register = () => {
             setPassword(inputPassword)
         }
     }
-    const validatePasswordCfPassword = (e, password) => {
+    const validatePasswordCfPassword = (e) => {
         const input_cf_Password = e.target.value
         if (validator.isStrongPassword(input_cf_Password)) {
             setC_Password(input_cf_Password)
@@ -59,28 +59,39 @@ const Register = () => {
             alert("The passwords doesn't match")
             return false
         } else {
-            console.log(`Email: ${email}`);
-            console.log(`Name: ${name}`);
-            console.log(`Password: ${password}`);
             const userObject = {
                 name: name,
                 email: email,
-                password: password
+                password: password,
+                confirm_password: c_password
             }
-            axios.post('http://localhost:4000/users/create-user', userObject).then(res => {
-                console.log(res.data);
-            })
-            setEmail("")
-            setName("")
-            setPassword("")
-            setC_Password("")
+            if (userObject.email && userObject.name && userObject.password && userObject.confirm_password !== "" && validator.isEmail(email)) {
+
+                axios.post('http://localhost:4000/users/register', userObject).then(res => {
+                    console.log(res.data);
+                }).catch(
+                    err => {
+                        console.log(err);
+                    }
+                )
+                console.log(name);
+                console.log(email);
+                console.log(password);
+                setEmail("")
+                setName("")
+                setPassword("")
+                setC_Password("")
+            } else {
+                alert("Check your name email and password")
+            }
+
         }
 
     }
-    const togglePasswordVisiblity = () => {
+    const togglePasswordEye = () => {
         setPasswordShown(passwordShown ? false : true);
     }
-    const toggleC_PasswordVisiblity = () => {
+    const toggleC_PasswordEye = () => {
         setC_PasswordShown(c_passwordShown ? false : true);
     }
     return (
@@ -100,14 +111,16 @@ const Register = () => {
                                                 <input type="name" className="form-control"
                                                     value={name}
                                                     onChange={(e) => { setName(e.target.value) }}
-                                                    placeholder="Name" />
+                                                    placeholder="Name" required />
                                                 <label className="form-label" htmlFor="form3Example1c">Your Name</label>
                                             </div>
                                         </div>
                                         <div className="d-flex flex-row align-items-center mb-4">
                                             <div className="form-outline flex-fill mb-0">
-                                                <input name="user_email"
-                                                    type="email" className="form-control"
+                                                <input
+                                                    name="user_email"
+                                                    type="email" id="_email"
+                                                    className="form-control"
                                                     value={email}
                                                     placeholder="Email"
                                                     onChange={validateEmail}
@@ -123,8 +136,9 @@ const Register = () => {
                                                     name="password"
                                                     onChange={validatePassword}
                                                     type={passwordShown ? "text" : "password"}
-                                                    placeholder="Password" />
-                                                <i className="eye1" onClick={togglePasswordVisiblity}  >{eye}</i>
+                                                    placeholder="Password"
+                                                    required />
+                                                <i className="eye1" onClick={togglePasswordEye}  >{eye}</i>
                                                 <label className="form-label" htmlFor="_pass">Password</label>
                                                 <span className="text-danger"  >  {passwordError}</span>
                                             </div>
@@ -136,8 +150,9 @@ const Register = () => {
                                                     value={c_password}
                                                     onChange={validatePasswordCfPassword}
                                                     type={c_passwordShown ? "text" : "password"}
-                                                    placeholder="Confirm password" />
-                                                <i className="eye2" onClick={toggleC_PasswordVisiblity}  >{eye}</i>
+                                                    placeholder="Confirm password"
+                                                    required />
+                                                <i className="eye2" onClick={toggleC_PasswordEye}  >{eye}</i>
                                                 <label className="form-label" htmlFor="c_pass">Repeat your password</label>
                                                 <span className="text-danger"  >  {c_passwordError}</span>
 
