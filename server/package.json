@@ -18,6 +18,7 @@
     "express-validator": "^6.12.1",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
+    "mongodb": "^4.1.1",
     "mongoose": "^5.13.7",
     "nodemon": "^2.0.12",
     "object-hash": "^2.2.0"

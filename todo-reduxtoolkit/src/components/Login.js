@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import { getUsersAsync } from '../redux/userSlice';
+import {useHistory} from 'react-router-dom'
 
 const Login = () => {
 
@@ -10,7 +11,7 @@ const Login = () => {
 
   const users = useSelector((state) => state.users)
   const dispatch = useDispatch();
-
+  const history = useHistory();
   useEffect(() => {
     dispatch(getUsersAsync())
     
@@ -19,10 +20,14 @@ const Login = () => {
 
   const onSubmit = e => {
     e.preventDefault();
-    const isLogin = users.find(user => email === user.email);
-    console.log(isLogin);
-    console.log("submit: : ",users);
-    console.log("submit: : ",email);
+    const isLogin = users.find(user =>  password === user.password);
+
+    console.log("Is login",isLogin);
+    if(isLogin){
+      history.push("/todopage");
+    }else{
+      alert("Your need register")
+    }
 
 
   }

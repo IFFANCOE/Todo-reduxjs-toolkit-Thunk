@@ -1,11 +1,15 @@
 let mongoose = require('mongoose'),
     express = require('express'),
     router = express.Router(),
-    hash = require('object-hash');
+    hash = require('object-hash')
 
-const jwt = require('jsonwebtoken')
+// const MongoClient = require('mongodb').MongoClient;
+// const url = "../database/database.js";
+
+const jwt = require('jsonwebtoken');
+const user = require('../models/User');
 // const jwt_decode = require('jwt-decode');
-// const decoded = jwt_decode(token);
+// const decoded = jwt_decode(token); // verifyToken
 
 //! User modle
 let userSchema = require('../models/User')
@@ -13,32 +17,30 @@ let userSchema = require('../models/User')
 //Fomat of token
 // Authorization: Bearer <access_token>
 //verify token
-const verifyToken = (req, res, next) => {
+const verifyToken = (req, reply, next) => {
     //Get auth header value
-    const bearerHeader = req.headers['authorization']
-    console.log(bearerHeader);
+    const { authorization } = req.headers
+    console.log(authorization);
     // Check if bearer is undefined
-    if (typeof bearerHeader !== 'undefined') {
+    if (typeof authorization !== 'undefined') {
         // split at the space
-        const bearer = bearerHeader.split(' ');
+        const bearer = authorization.split(' ');
         // Get token from array 
         const bearerToken = bearer[1];
         // Set the token 
         req.token = bearerToken
-        console.log(req.token,"555");
+        console.log("Token is :", req.token);
         // Next niddleware
         next();
     } else {
         // Forbidden
-        res.sendStatus(403);
+        reply.sendStatus(403);
     }
 }
 
 //-Create User in database
 router.route('/register').post((req, res, next) => {
-
- const jwtSign  = jwt.sign(req.body, 'secretkey')
-
+    const jwtSign = jwt.sign(req.body, 'secretkey')
     console.log(jwtSign);
     let passwordHash = hash([req.body.password])
     const bodyReq = {
@@ -46,7 +48,16 @@ router.route('/register').post((req, res, next) => {
         email: req.body.email,
         password: passwordHash,
         confirm_password: passwordHash,
-        token:jwtSign
+        token: jwtSign
+    }
+
+    const userData = userSchema.find({ }, (User, schema) => { console.log(schema) })
+
+    const sameEmail = users.find(user => user.email === req.body.email)
+    // console.log(users);
+
+    if (sameEmail.length) {
+        console.log("same email");
     }
     userSchema.create(bodyReq, (error, data) => {
         if (error) {
@@ -56,10 +67,13 @@ router.route('/register').post((req, res, next) => {
             console.log(data);
         res.json(data)
     })
+
+
 })
 
-//login 
-router.route('/login').post(verifyToken,(req, res) => {
+//login verify is decoded
+router.route('/login').post(verifyToken, (req, res) => {
+
     jwt.verify(req.token, 'secretkey', (err, authData) => {
         if (err) {
             res.sendStatus(403);
@@ -124,7 +138,5 @@ router.route('delete-user/:id').delete((req, res, next) => {
         }
     })
 })
-
-
 
 module.exports = router

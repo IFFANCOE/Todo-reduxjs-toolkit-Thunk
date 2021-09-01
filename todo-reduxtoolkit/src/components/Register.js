@@ -5,6 +5,9 @@ import validator from 'validator'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import './css/style.css'
+// import { useSelector } from 'react-redux'
+
+
 
 const Register = () => {
     let history = useHistory();
@@ -19,6 +22,7 @@ const Register = () => {
     const [c_passwordError, setC_PasswordError] = useState("")
     const [passwordShown, setPasswordShown] = useState(false);
     const [c_passwordShown, setC_PasswordShown] = useState(false);
+
 
     const validateEmail = (e) => {
         //Email
@@ -53,12 +57,16 @@ const Register = () => {
             setC_PasswordError('Is Not Strong Password')
         }
     }
+    //get user from database
+    // const users = useSelector((state) => state.users)
+    // console.log("9999999 ", users);
     const onSubmit = (e) => {
         e.preventDefault();
         if (password !== c_password) {
             alert("The passwords doesn't match")
             return false
         } else {
+
             const userObject = {
                 name: name,
                 email: email,
@@ -82,7 +90,7 @@ const Register = () => {
                 setPassword("")
                 setC_Password("")
             } else {
-                alert("Check your name email and password")
+                alert("Check your name email and password again")
             }
 
         }

@@ -1,12 +1,11 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import AddTodoForm from './components/AddTodoForm';
-// import TodoList from './components/TodoList';
-// import TotalCompleteItems from './components/TotalCompleteItems';
+
 import Login from './components/Login';
 import Register from './components/Register';
 
 import {BrowserRouter as Router, Route,Switch} from 'react-router-dom'
+import { TodoPage } from './components/TodoPage';
 
 const App = () => {
 	console.log("Hi!");
@@ -15,16 +14,14 @@ const App = () => {
 			<Router>
 				<Switch>
 				<Route exact path="/"><Login /></Route>
-				<Route exact path="/register" component ={Register}></Route>
+				<Route exact path="/register" component ={Register}/>
+				<Route exact path="/todopage" component ={TodoPage}/>
 			</Switch>
 			</Router>
 			
 			
 
-			{/* <h1>My Todo List</h1>
-			<AddTodoForm />
-			<TodoList />
-			<TotalCompleteItems />  */}
+			
 		</div>
 	);
 };

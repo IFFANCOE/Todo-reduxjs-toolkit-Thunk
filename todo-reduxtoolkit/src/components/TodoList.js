@@ -12,7 +12,7 @@ const TodoList = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(getTodosAsync())
-	},[getTodosAsync])
+	},[dispatch])
 
 	return (
 		<ul className='list-group'>
